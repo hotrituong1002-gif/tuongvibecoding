@@ -4,7 +4,9 @@ import { getSetting } from "@/lib/queries/settings";
 import { formatVnd } from "@/lib/format";
 
 export const metadata = {
-  title: "Sản phẩm — AI Sales Academy",
+  title: "Sản phẩm",
+  description:
+    "Bảng giá Ebook và các combo trong lộ trình dựng trang bán hàng bằng AI. Mua lẻ theo nhu cầu hoặc chọn trọn bộ để tiết kiệm.",
 };
 
 export default async function SanPhamPage() {

@@ -5,7 +5,7 @@ import { getUnlockedSlugs } from "@/lib/queries/unlocks";
 import HocVienClient from "./HocVienClient";
 
 export const metadata = {
-  title: "Học viện — AI Sales Academy",
+  title: "Học viện",
 };
 
 export default async function HocVienPage() {

@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import type { CurrentUser } from "@/lib/queries/auth";
+import { createClient } from "@/lib/supabase/client";
 
 const NAV_LINKS = [
   { href: "/", label: "Trang chủ" },
@@ -11,9 +13,18 @@ const NAV_LINKS = [
   { href: "/doi-tac", label: "Đối tác" },
 ];
 
-export default function Header() {
+export default function Header({ user }: { user: CurrentUser | null }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+
+  async function handleLogout() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    setOpen(false);
+    router.push("/");
+    router.refresh();
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
@@ -42,15 +53,41 @@ export default function Header() {
               </Link>
             );
           })}
+          {user?.isAdmin && (
+            <Link
+              href="/admin"
+              className={`text-sm font-semibold uppercase tracking-wide transition-colors ${
+                pathname.startsWith("/admin")
+                  ? "text-gold"
+                  : "text-foreground/80 hover:text-gold"
+              }`}
+            >
+              Quản trị
+            </Link>
+          )}
         </nav>
 
-        <div className="hidden md:block">
-          <Link
-            href="/dang-nhap"
-            className="btn-gold rounded-full px-5 py-2 text-sm font-bold"
-          >
-            Đăng nhập
-          </Link>
+        <div className="hidden items-center gap-4 md:flex">
+          {user ? (
+            <>
+              <span className="max-w-[10rem] truncate text-sm text-muted" title={user.email ?? ""}>
+                {user.email}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="rounded-full border border-border px-5 py-2 text-sm font-bold text-foreground hover:border-gold hover:text-gold"
+              >
+                Đăng xuất
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/dang-nhap"
+              className="btn-gold rounded-full px-5 py-2 text-sm font-bold"
+            >
+              Đăng nhập
+            </Link>
+          )}
         </div>
 
         <button
@@ -75,13 +112,34 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/dang-nhap"
-              onClick={() => setOpen(false)}
-              className="btn-gold w-fit rounded-full px-5 py-2 text-sm font-bold"
-            >
-              Đăng nhập
-            </Link>
+            {user?.isAdmin && (
+              <Link
+                href="/admin"
+                onClick={() => setOpen(false)}
+                className="text-sm font-semibold uppercase tracking-wide text-foreground/80 hover:text-gold"
+              >
+                Quản trị
+              </Link>
+            )}
+            {user ? (
+              <>
+                <span className="text-sm text-muted">{user.email}</span>
+                <button
+                  onClick={handleLogout}
+                  className="w-fit rounded-full border border-border px-5 py-2 text-sm font-bold hover:border-gold hover:text-gold"
+                >
+                  Đăng xuất
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/dang-nhap"
+                onClick={() => setOpen(false)}
+                className="btn-gold w-fit rounded-full px-5 py-2 text-sm font-bold"
+              >
+                Đăng nhập
+              </Link>
+            )}
           </nav>
         </div>
       )}

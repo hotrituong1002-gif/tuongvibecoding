@@ -18,7 +18,7 @@ function mapAuthError(message: string) {
 }
 
 export default function DangNhapClient() {
-  const [tab, setTab] = useState<"login" | "register">("login");
+  const [tab, setTab] = useState<"login" | "register" | "forgot">("login");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,6 +35,21 @@ export default function DangNhapClient() {
     setNotice("");
     setSubmitting(true);
     const supabase = createClient();
+
+    if (tab === "forgot") {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/dat-lai-mat-khau`,
+      });
+      setSubmitting(false);
+      if (error) {
+        setError(mapAuthError(error.message));
+        return;
+      }
+      setNotice(
+        "Đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra hộp thư của bạn.",
+      );
+      return;
+    }
 
     if (tab === "login") {
       const { error } = await supabase.auth.signInWithPassword({
@@ -102,12 +117,17 @@ export default function DangNhapClient() {
         </div>
 
         <h1 className="text-xl font-bold">
-          {tab === "login" ? "Chào mừng trở lại" : "Tạo tài khoản mới"}
+          {tab === "login" && "Chào mừng trở lại"}
+          {tab === "register" && "Tạo tài khoản mới"}
+          {tab === "forgot" && "Lấy lại mật khẩu"}
         </h1>
         <p className="mt-1 text-sm text-muted">
-          {tab === "login"
-            ? "Đăng nhập để vào Học viện và mở khóa các combo đã mua."
-            : "Tạo tài khoản để bắt đầu hành trình kiếm tiền với AI."}
+          {tab === "login" &&
+            "Đăng nhập để vào Học viện và mở khóa các combo đã mua."}
+          {tab === "register" &&
+            "Tạo tài khoản để bắt đầu hành trình kiếm tiền với AI."}
+          {tab === "forgot" &&
+            "Nhập email đã đăng ký, chúng tôi sẽ gửi liên kết đặt lại mật khẩu."}
         </p>
 
         {notice && (
@@ -145,20 +165,36 @@ export default function DangNhapClient() {
               className="mt-1.5 w-full rounded-lg border border-border bg-panel-2 px-4 py-2.5 text-sm outline-none focus:border-gold"
             />
           </div>
-          <div>
-            <label className="text-xs font-semibold uppercase tracking-wide text-muted">
-              Mật khẩu
-            </label>
-            <input
-              required
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              minLength={6}
-              className="mt-1.5 w-full rounded-lg border border-border bg-panel-2 px-4 py-2.5 text-sm outline-none focus:border-gold"
-            />
-          </div>
+          {tab !== "forgot" && (
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wide text-muted">
+                Mật khẩu
+              </label>
+              <input
+                required
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                minLength={6}
+                className="mt-1.5 w-full rounded-lg border border-border bg-panel-2 px-4 py-2.5 text-sm outline-none focus:border-gold"
+              />
+            </div>
+          )}
+
+          {tab === "login" && (
+            <button
+              type="button"
+              onClick={() => {
+                setTab("forgot");
+                setError("");
+                setNotice("");
+              }}
+              className="text-xs font-semibold text-muted hover:text-gold"
+            >
+              Quên mật khẩu?
+            </button>
+          )}
 
           {error && <p className="text-sm text-red-400">{error}</p>}
 
@@ -167,12 +203,25 @@ export default function DangNhapClient() {
             disabled={submitting}
             className="btn-gold w-full rounded-full py-3 text-sm disabled:opacity-60"
           >
-            {submitting
-              ? "Đang xử lý..."
-              : tab === "login"
-                ? "Đăng nhập"
-                : "Tạo tài khoản"}
+            {submitting && "Đang xử lý..."}
+            {!submitting && tab === "login" && "Đăng nhập"}
+            {!submitting && tab === "register" && "Tạo tài khoản"}
+            {!submitting && tab === "forgot" && "Gửi liên kết đặt lại"}
           </button>
+
+          {tab === "forgot" && (
+            <button
+              type="button"
+              onClick={() => {
+                setTab("login");
+                setError("");
+                setNotice("");
+              }}
+              className="w-full text-center text-xs font-semibold text-muted hover:text-gold"
+            >
+              ← Quay lại đăng nhập
+            </button>
+          )}
         </form>
       </div>
     </div>

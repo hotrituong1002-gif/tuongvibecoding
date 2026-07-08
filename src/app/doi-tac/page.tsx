@@ -1,7 +1,9 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Đối tác — AI Sales Academy",
+  title: "Đối tác",
+  description:
+    "Tham gia chương trình đối tác AI Sales Academy: giới thiệu sản phẩm, nhận hoa hồng minh bạch tới 40% trên mỗi đơn hàng.",
 };
 
 const STEPS = [
