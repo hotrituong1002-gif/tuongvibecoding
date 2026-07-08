@@ -27,9 +27,13 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // If Supabase isn't reachable yet (e.g. placeholder env vars while the
+  // real project is being set up), treat the visitor as logged out instead
+  // of letting the request crash.
+  const user = await supabase.auth
+    .getUser()
+    .then(({ data }) => data.user)
+    .catch(() => null);
 
   const isProtected = PROTECTED_PREFIXES.some((prefix) =>
     request.nextUrl.pathname.startsWith(prefix),
