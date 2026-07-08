@@ -86,6 +86,19 @@ insert into public.settings (key, value)
 values ('bundle_price', '990000')
 on conflict (key) do nothing;
 
+-- 6. orders (SePay bank-transfer checkout)
+create table if not exists public.orders (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  scope text not null, -- 'bundle' or an exact product slug
+  amount integer not null,
+  payment_code text unique not null,
+  status text not null default 'pending' check (status in ('pending','paid','expired','cancelled')),
+  sepay_transaction_id text,
+  paid_at timestamptz,
+  created_at timestamptz not null default now()
+);
+
 -- Helper: is the current logged-in user an admin? (security definer avoids RLS recursion)
 create or replace function public.is_admin()
 returns boolean
@@ -105,6 +118,7 @@ alter table public.products enable row level security;
 alter table public.activation_codes enable row level security;
 alter table public.unlocks enable row level security;
 alter table public.settings enable row level security;
+alter table public.orders enable row level security;
 
 drop policy if exists "profiles_select" on public.profiles;
 create policy "profiles_select" on public.profiles for select
@@ -157,6 +171,20 @@ create policy "settings_select" on public.settings for select
 drop policy if exists "settings_write" on public.settings;
 create policy "settings_write" on public.settings for all
   using (public.is_admin()) with check (public.is_admin());
+
+drop policy if exists "orders_select" on public.orders;
+create policy "orders_select" on public.orders for select
+  using (auth.uid() = user_id or public.is_admin());
+
+drop policy if exists "orders_insert" on public.orders;
+create policy "orders_insert" on public.orders for insert
+  with check (auth.uid() = user_id);
+
+-- Only admins can change order status from the client (e.g. manual reconcile).
+-- The SePay webhook itself runs with the service role key, which bypasses RLS.
+drop policy if exists "orders_update_admin" on public.orders;
+create policy "orders_update_admin" on public.orders for update
+  using (public.is_admin());
 
 -- Redeem an activation code as the logged-in user.
 -- Runs as security definer so a normal user can redeem without needing

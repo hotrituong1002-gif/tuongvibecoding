@@ -36,3 +36,17 @@ export type Profile = {
   role: "customer" | "admin";
   created_at: string;
 };
+
+export type OrderStatus = "pending" | "paid" | "expired" | "cancelled";
+
+export type Order = {
+  id: string;
+  user_id: string;
+  scope: string;
+  amount: number;
+  payment_code: string;
+  status: OrderStatus;
+  sepay_transaction_id: string | null;
+  paid_at: string | null;
+  created_at: string;
+};

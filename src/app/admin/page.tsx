@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { formatVnd } from "@/lib/format";
 
 export const metadata = {
   title: "Quản trị — Tổng quan",
@@ -12,6 +13,8 @@ export default async function AdminOverviewPage() {
     { count: productCount },
     { count: codeCount },
     { count: unlockCount },
+    { count: pendingOrderCount },
+    { data: paidOrders },
   ] = await Promise.all([
     supabase.from("profiles").select("*", { count: "exact", head: true }),
     supabase.from("products").select("*", { count: "exact", head: true }),
@@ -20,9 +23,21 @@ export default async function AdminOverviewPage() {
       .select("*", { count: "exact", head: true })
       .eq("is_active", true),
     supabase.from("unlocks").select("*", { count: "exact", head: true }),
+    supabase
+      .from("orders")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "pending"),
+    supabase.from("orders").select("amount").eq("status", "paid"),
   ]);
 
+  const totalRevenue = (paidOrders ?? []).reduce(
+    (sum, o) => sum + o.amount,
+    0,
+  );
+
   const stats = [
+    { label: "Doanh thu đã thu (SePay)", value: formatVnd(totalRevenue) },
+    { label: "Đơn chờ thanh toán", value: pendingOrderCount ?? 0 },
     { label: "Người dùng", value: userCount ?? 0 },
     { label: "Sản phẩm", value: productCount ?? 0 },
     { label: "Mã kích hoạt đang hoạt động", value: codeCount ?? 0 },
@@ -36,7 +51,7 @@ export default async function AdminOverviewPage() {
         Toàn cảnh hệ thống AI Sales Academy.
       </p>
 
-      <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {stats.map((s) => (
           <div
             key={s.label}

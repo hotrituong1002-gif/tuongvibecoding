@@ -3,6 +3,7 @@ import { getProducts } from "@/lib/queries/products";
 import { getSetting } from "@/lib/queries/settings";
 import { formatVnd } from "@/lib/format";
 import CountdownTimer from "@/components/CountdownTimer";
+import { createOrder } from "@/app/thanh-toan/actions";
 
 // Update this to match your real promotion end date.
 const PROMO_END_DATE = "2026-07-15T23:59:59+07:00";
@@ -60,12 +61,11 @@ export default async function SanPhamPage() {
             <p className="text-3xl font-extrabold text-gold">
               {formatVnd(bundlePrice)}
             </p>
-            <Link
-              href="/dang-nhap"
-              className="btn-gold mt-4 inline-block rounded-full px-8 py-3 text-sm"
-            >
-              Mua trọn bộ ngay
-            </Link>
+            <form action={createOrder.bind(null, "bundle")}>
+              <button className="btn-gold mt-4 rounded-full px-8 py-3 text-sm">
+                Mua trọn bộ ngay
+              </button>
+            </form>
           </div>
         </div>
         <div className="relative border-t border-gold/20 bg-black/20 px-8 py-6 text-center sm:px-10">
@@ -101,12 +101,11 @@ export default async function SanPhamPage() {
                 <span className="text-lg font-bold text-gold">
                   {formatVnd(ebook.price)}
                 </span>
-                <Link
-                  href="/dang-nhap"
-                  className="btn-gold rounded-full px-5 py-2 text-sm"
-                >
-                  Đặt sách
-                </Link>
+                <form action={createOrder.bind(null, ebook.slug)}>
+                  <button className="btn-gold rounded-full px-5 py-2 text-sm">
+                    Đặt sách
+                  </button>
+                </form>
               </div>
             </div>
           </div>
@@ -144,12 +143,11 @@ export default async function SanPhamPage() {
                   <p className="font-bold text-gold">{formatVnd(c.price)}</p>
                   <p className="text-xs text-muted">{c.lessons_count} bài học</p>
                 </div>
-                <Link
-                  href="/dang-nhap"
-                  className="rounded-full border border-gold px-4 py-2 text-sm font-semibold text-gold hover:bg-gold hover:text-black"
-                >
-                  Mua ngay
-                </Link>
+                <form action={createOrder.bind(null, c.slug)}>
+                  <button className="rounded-full border border-gold px-4 py-2 text-sm font-semibold text-gold hover:bg-gold hover:text-black">
+                    Mua ngay
+                  </button>
+                </form>
               </div>
             </div>
           ))}
@@ -182,8 +180,8 @@ export default async function SanPhamPage() {
 
       <p className="mt-10 text-center text-xs text-muted">
         Tổng {products.length} sản phẩm trong hệ sinh thái AI Sales Academy.
-        Nút &quot;Mua ngay&quot; hiện dẫn tới trang đăng nhập — kết nối cổng
-        thanh toán thật khi triển khai chính thức.
+        Thanh toán qua chuyển khoản ngân hàng (SePay), tự động mở khóa sau khi
+        nhận được tiền.
       </p>
     </div>
   );
