@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { getProducts } from "@/lib/queries/products";
 import { formatVnd } from "@/lib/format";
+import CountdownTimer from "@/components/CountdownTimer";
+
+// Update this to match your real promotion end date.
+const PROMO_END_DATE = "2026-07-15T23:59:59+07:00";
 
 const STATS = [
   { value: "3.200+", label: "học viên đã tham gia" },
@@ -74,16 +78,17 @@ export default async function HomePage() {
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(242,183,5,0.12),_transparent_60%)]" />
+        <div className="neon-glow-bg" />
         <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
           <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-block rounded-full border border-gold/40 bg-gold/10 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-gold">
-              Hướng dẫn tạo trang bán hàng · Kiếm tiền với AI
+            <span className="urgency-badge">
+              🔥 Ưu đãi ra mắt — giá tốt nhất áp dụng có thời hạn
             </span>
             <h1 className="mt-6 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
               Tự tay dựng trang bán hàng{" "}
-              <span className="gold-gradient-text">chuyên nghiệp</span> bằng AI
-              — không cần biết code
+              <span className="gold-gradient-text">chuyên nghiệp</span> bằng{" "}
+              <span className="neon-gradient-text">AI</span> — không cần biết
+              code
             </h1>
             <p className="mt-6 text-lg text-muted">
               Lộ trình từng bước giúp bạn viết content, thiết kế trang bán hàng
@@ -103,6 +108,13 @@ export default async function HomePage() {
               >
                 Vào Học viện
               </Link>
+            </div>
+
+            <div className="mt-10">
+              <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-muted">
+                Ưu đãi kết thúc sau
+              </p>
+              <CountdownTimer targetDate={PROMO_END_DATE} />
             </div>
           </div>
 
@@ -265,21 +277,24 @@ export default async function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
-        <div className="card-panel rounded-3xl px-8 py-14 text-center">
-          <h2 className="text-3xl font-bold sm:text-4xl">
-            Sẵn sàng có trang bán hàng đầu tiên bằng AI?
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-muted">
-            Bắt đầu với ebook {formatVnd(ebook?.price ?? 0)} hoặc chọn trọn bộ
-            lộ trình để tiết kiệm hơn.
-          </p>
-          <Link
-            href="/san-pham"
-            className="btn-gold mt-8 inline-block rounded-full px-8 py-3 text-base"
-          >
-            Xem bảng giá ngay
-          </Link>
+      <section className="relative mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
+        <div className="card-panel relative overflow-hidden rounded-3xl px-8 py-14 text-center">
+          <div className="neon-glow-bg" />
+          <div className="relative">
+            <h2 className="text-3xl font-bold sm:text-4xl">
+              Sẵn sàng có trang bán hàng đầu tiên bằng AI?
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-muted">
+              Bắt đầu với ebook {formatVnd(ebook?.price ?? 0)} hoặc chọn trọn
+              bộ lộ trình để tiết kiệm hơn.
+            </p>
+            <Link
+              href="/san-pham"
+              className="btn-gold mt-8 inline-block rounded-full px-8 py-3 text-base"
+            >
+              Xem bảng giá ngay
+            </Link>
+          </div>
         </div>
       </section>
     </div>

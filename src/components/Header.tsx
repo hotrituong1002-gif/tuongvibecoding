@@ -10,7 +10,6 @@ const NAV_LINKS = [
   { href: "/", label: "Trang chủ" },
   { href: "/san-pham", label: "Sản phẩm" },
   { href: "/hoc-vien", label: "Học viện" },
-  { href: "/doi-tac", label: "Đối tác" },
 ];
 
 export default function Header({ user }: { user: CurrentUser | null }) {

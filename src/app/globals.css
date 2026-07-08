@@ -9,6 +9,8 @@
   --gold: #f2b705;
   --gold-2: #ffd447;
   --muted: #9a9aa5;
+  --cyan: #22d3ee;
+  --purple: #a855f7;
 }
 
 @theme inline {
@@ -20,6 +22,8 @@
   --color-gold: var(--gold);
   --color-gold-2: var(--gold-2);
   --color-muted: var(--muted);
+  --color-cyan: var(--cyan);
+  --color-purple: var(--purple);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -36,17 +40,79 @@ body {
   color: transparent;
 }
 
+.neon-gradient-text {
+  background: linear-gradient(90deg, var(--cyan), var(--purple));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 .btn-gold {
   background: linear-gradient(90deg, var(--gold-2), var(--gold));
   color: #1a1200;
   font-weight: 700;
+  box-shadow: 0 0 0 rgba(242, 183, 5, 0);
+  transition: box-shadow 0.25s ease, filter 0.25s ease, transform 0.15s ease;
 }
 
 .btn-gold:hover {
   filter: brightness(1.05);
+  box-shadow: 0 0 28px rgba(242, 183, 5, 0.45);
+  transform: translateY(-1px);
 }
 
 .card-panel {
   background: var(--panel);
   border: 1px solid var(--border);
+}
+
+/* Neon glow background blobs, layered behind hero-style sections */
+.neon-glow-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(168, 85, 247, 0.22), transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(34, 211, 238, 0.18), transparent 45%),
+    radial-gradient(ellipse at 50% 0%, rgba(242, 183, 5, 0.14), transparent 60%);
+}
+
+.urgency-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  padding: 0.4rem 1.1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(90deg, #ec4899, var(--purple));
+  box-shadow: 0 0 24px rgba(168, 85, 247, 0.5);
+  animation: pulse-glow 2.4s ease-in-out infinite;
+}
+
+.countdown-box {
+  border-radius: 1rem;
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  background: rgba(34, 211, 238, 0.06);
+  box-shadow: 0 0 22px rgba(34, 211, 238, 0.18);
+}
+
+.countdown-digit {
+  background: linear-gradient(90deg, #ffffff, var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 18px rgba(168, 85, 247, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 32px rgba(236, 72, 153, 0.6);
+  }
 }

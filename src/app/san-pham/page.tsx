@@ -2,6 +2,10 @@ import Link from "next/link";
 import { getProducts } from "@/lib/queries/products";
 import { getSetting } from "@/lib/queries/settings";
 import { formatVnd } from "@/lib/format";
+import CountdownTimer from "@/components/CountdownTimer";
+
+// Update this to match your real promotion end date.
+const PROMO_END_DATE = "2026-07-15T23:59:59+07:00";
 
 export const metadata = {
   title: "Sản phẩm",
@@ -36,13 +40,12 @@ export default async function SanPhamPage() {
       </div>
 
       {/* Bundle CTA */}
-      <div className="mt-12 overflow-hidden rounded-3xl border border-gold/40 bg-gradient-to-br from-amber-950/60 via-panel to-panel">
-        <div className="flex flex-col items-center gap-6 p-8 sm:flex-row sm:justify-between sm:p-10">
+      <div className="relative mt-12 overflow-hidden rounded-3xl border border-gold/40 bg-gradient-to-br from-amber-950/60 via-panel to-panel">
+        <div className="neon-glow-bg" />
+        <div className="relative flex flex-col items-center gap-6 p-8 sm:flex-row sm:justify-between sm:p-10">
           <div>
-            <span className="text-xs font-semibold uppercase tracking-widest text-gold-2">
-              Tiết kiệm nhất
-            </span>
-            <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
+            <span className="urgency-badge">Tiết kiệm nhất</span>
+            <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
               Trọn bộ lộ trình: Ebook + {combos.length} combo + AI Sales System
             </h2>
             <p className="mt-2 text-sm text-muted">
@@ -64,6 +67,12 @@ export default async function SanPhamPage() {
               Mua trọn bộ ngay
             </Link>
           </div>
+        </div>
+        <div className="relative border-t border-gold/20 bg-black/20 px-8 py-6 text-center sm:px-10">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted">
+            Ưu đãi kết thúc sau
+          </p>
+          <CountdownTimer targetDate={PROMO_END_DATE} />
         </div>
       </div>
 

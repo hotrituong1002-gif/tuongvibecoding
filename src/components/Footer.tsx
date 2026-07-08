@@ -23,7 +23,6 @@ export default function Footer() {
               <li><Link className="hover:text-gold" href="/">Trang chủ</Link></li>
               <li><Link className="hover:text-gold" href="/san-pham">Sản phẩm</Link></li>
               <li><Link className="hover:text-gold" href="/hoc-vien">Học viện</Link></li>
-              <li><Link className="hover:text-gold" href="/doi-tac">Đối tác</Link></li>
             </ul>
           </div>
 

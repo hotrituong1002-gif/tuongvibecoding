@@ -7,12 +7,18 @@ import type { Product } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
 import CourseCard from "@/components/CourseCard";
 
-const SIDEBAR_LINKS = [
+type SidebarLink = {
+  label: string;
+  icon: string;
+  active?: boolean;
+  href?: string;
+};
+
+const SIDEBAR_LINKS: SidebarLink[] = [
   { label: "Khóa học", icon: "▭", active: true },
   { label: "Cộng đồng", icon: "👥" },
   { label: "Tư vấn", icon: "📞" },
   { label: "Hỗ trợ", icon: "⏱" },
-  { label: "Đối tác", icon: "🤝", href: "/doi-tac" },
 ];
 
 const ERROR_MESSAGES: Record<string, string> = {
