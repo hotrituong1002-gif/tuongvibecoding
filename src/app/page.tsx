@@ -1,65 +1,282 @@
-import Image from "next/image";
+import Link from "next/link";
+import { COMBOS, EBOOK, formatVnd } from "@/lib/products";
 
-export default function Home() {
+const STATS = [
+  { value: "3.200+", label: "học viên đã tham gia" },
+  { value: "4.8/5", label: "đánh giá trung bình" },
+  { value: "24 giờ", label: "để ra trang bán hàng đầu tiên" },
+];
+
+const PROBLEMS = [
+  "Muốn bán hàng online nhưng không biết thiết kế, không biết code.",
+  "Viết content mãi không ai đọc, không ai mua.",
+  "Thuê ngoài làm trang bán hàng thì tốn tiền, chờ lâu, sửa mệt.",
+];
+
+const FEATURES = [
+  {
+    title: "Lộ trình theo từng bước",
+    desc: "Không lý thuyết dàn trải — đi từ tư duy, viết content, dựng trang, đến tự động hoá và tối ưu doanh số.",
+  },
+  {
+    title: "Dùng AI làm thay việc khó",
+    desc: "Bạn không cần biết thiết kế hay lập trình. AI lo phần kỹ thuật, bạn tập trung vào sản phẩm & khách hàng.",
+  },
+  {
+    title: "Học xong có trang thật",
+    desc: "Kết thúc lộ trình, bạn có ít nhất một trang bán hàng hoàn chỉnh, sẵn sàng chạy quảng cáo.",
+  },
+];
+
+const TESTIMONIALS = [
+  {
+    name: "Minh Anh",
+    role: "Kinh doanh mỹ phẩm online",
+    quote:
+      "Trước giờ mình toàn thuê ngoài làm landing page, giờ tự làm trong một buổi tối bằng AI, tiết kiệm cả triệu bạc mỗi lần sửa.",
+  },
+  {
+    name: "Đức Huy",
+    role: "Freelancer dịch vụ AI",
+    quote:
+      "Combo Copywriting với Thiết Kế Trang Bán Hàng giúp mình có ngay sản phẩm demo để chào khách, chốt đơn nhanh hơn hẳn.",
+  },
+  {
+    name: "Thu Trang",
+    role: "Chủ shop thời trang",
+    quote:
+      "Phần automation giúp shop mình trả lời khách tự động 24/7, không còn bỏ sót đơn vào ban đêm nữa.",
+  },
+];
+
+const FAQS = [
+  {
+    q: "Tôi không biết gì về AI hay thiết kế, có học được không?",
+    a: "Được. Lộ trình thiết kế cho người mới bắt đầu từ số 0, có hướng dẫn từng bước và prompt mẫu dùng ngay.",
+  },
+  {
+    q: "Học xong tôi có cần trả thêm phí công cụ AI không?",
+    a: "Khoá học ưu tiên các công cụ có bản miễn phí hoặc chi phí thấp, phù hợp để bắt đầu mà không cần đầu tư lớn.",
+  },
+  {
+    q: "Tôi có thể mua lẻ từng combo thay vì mua trọn bộ không?",
+    a: "Có. Bạn có thể mua từng combo theo nhu cầu, hoặc chọn trọn bộ để tiết kiệm hơn — xem chi tiết ở trang Sản phẩm.",
+  },
+];
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div>
+      {/* Hero */}
+      <section className="relative overflow-hidden border-b border-border">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(242,183,5,0.12),_transparent_60%)]" />
+        <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-block rounded-full border border-gold/40 bg-gold/10 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-gold">
+              Hướng dẫn tạo trang bán hàng · Kiếm tiền với AI
+            </span>
+            <h1 className="mt-6 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+              Tự tay dựng trang bán hàng{" "}
+              <span className="gold-gradient-text">chuyên nghiệp</span> bằng AI
+              — không cần biết code
+            </h1>
+            <p className="mt-6 text-lg text-muted">
+              Lộ trình từng bước giúp bạn viết content, thiết kế trang bán hàng
+              và tự động hoá chăm sóc khách hàng — tất cả bằng công cụ AI, dù
+              bạn chưa từng làm marketing hay lập trình.
+            </p>
+            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <Link
+                href="/san-pham"
+                className="btn-gold w-full rounded-full px-8 py-3 text-center text-base sm:w-auto"
+              >
+                Xem lộ trình &amp; bảng giá
+              </Link>
+              <Link
+                href="/hoc-vien"
+                className="w-full rounded-full border border-border px-8 py-3 text-center text-base font-semibold text-foreground hover:border-gold hover:text-gold sm:w-auto"
+              >
+                Vào Học viện
+              </Link>
+            </div>
+          </div>
+
+          <div className="mx-auto mt-16 grid max-w-3xl grid-cols-1 gap-6 sm:grid-cols-3">
+            {STATS.map((s) => (
+              <div
+                key={s.label}
+                className="card-panel rounded-2xl px-6 py-5 text-center"
+              >
+                <p className="text-2xl font-extrabold text-gold">{s.value}</p>
+                <p className="mt-1 text-sm text-muted">{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Problems */}
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+          <div>
+            <h2 className="text-3xl font-bold sm:text-4xl">
+              Bạn có đang gặp những vấn đề này?
+            </h2>
+            <p className="mt-4 text-muted">
+              Rất nhiều người muốn bán hàng online nhưng bị chặn lại ngay từ
+              bước đầu tiên: dựng một trang bán hàng đủ chuyên nghiệp để khách
+              tin tưởng và xuống tiền.
+            </p>
+            <ul className="mt-8 space-y-4">
+              {PROBLEMS.map((p) => (
+                <li key={p} className="flex gap-3">
+                  <span className="mt-1 text-gold">✕</span>
+                  <span className="text-foreground/90">{p}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="card-panel rounded-3xl p-8">
+            <p className="text-sm font-semibold uppercase tracking-wide text-gold">
+              Giải pháp
+            </p>
+            <p className="mt-3 text-xl font-bold">
+              Dùng AI làm phần việc khó — bạn chỉ cần làm theo lộ trình.
+            </p>
+            <p className="mt-4 text-muted">
+              Ebook &quot;{EBOOK.title}&quot; và 5 combo trong lộ trình sẽ dẫn
+              bạn đi từ tư duy đến một trang bán hàng thật, đang chạy được
+              doanh số.
+            </p>
+            <Link
+              href="/san-pham"
+              className="mt-6 inline-block font-semibold text-gold hover:underline"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              Xem lộ trình chi tiết →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="border-y border-border bg-panel/40 py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-center text-3xl font-bold sm:text-4xl">
+            Vì sao chọn AI Sales Academy?
+          </h2>
+          <div className="mt-12 grid gap-8 md:grid-cols-3">
+            {FEATURES.map((f) => (
+              <div key={f.title} className="card-panel rounded-2xl p-8">
+                <h3 className="text-lg font-bold text-gold">{f.title}</h3>
+                <p className="mt-3 text-sm text-muted">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Curriculum preview */}
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <h2 className="text-3xl font-bold sm:text-4xl">
+              Lộ trình 5 combo + 1 ebook
+            </h2>
+            <p className="mt-3 max-w-2xl text-muted">
+              Mỗi combo tập trung giải quyết một bước trong hành trình dựng
+              trang bán hàng bằng AI, học xong áp dụng được ngay.
+            </p>
+          </div>
+          <Link
+            href="/san-pham"
+            className="whitespace-nowrap font-semibold text-gold hover:underline"
+          >
+            Xem đầy đủ &amp; bảng giá →
+          </Link>
+        </div>
+
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {COMBOS.map((c, i) => (
+            <div
+              key={c.slug}
+              className={`rounded-2xl bg-gradient-to-br p-6 ${c.cover} border border-border`}
             >
-              Learning
-            </a>{" "}
-            center.
+              <span className="text-xs font-semibold uppercase tracking-widest text-gold-2">
+                {c.tag}
+              </span>
+              <h3 className="mt-2 text-xl font-bold">
+                {i + 1}. {c.title}
+              </h3>
+              <p className="mt-3 text-sm text-white/70">{c.description}</p>
+              <div className="mt-5 flex items-center justify-between text-sm">
+                <span className="text-white/60">{c.lessonsCount} bài học</span>
+                <span className="font-bold text-gold">{c.priceLabel}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="border-y border-border bg-panel/40 py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-center text-3xl font-bold sm:text-4xl">
+            Học viên nói gì?
+          </h2>
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {TESTIMONIALS.map((t) => (
+              <div key={t.name} className="card-panel rounded-2xl p-6">
+                <p className="text-gold">★★★★★</p>
+                <p className="mt-3 text-sm text-foreground/90">
+                  &ldquo;{t.quote}&rdquo;
+                </p>
+                <p className="mt-4 text-sm font-semibold">{t.name}</p>
+                <p className="text-xs text-muted">{t.role}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="mx-auto max-w-4xl px-4 py-20 sm:px-6 lg:px-8">
+        <h2 className="text-center text-3xl font-bold sm:text-4xl">
+          Câu hỏi thường gặp
+        </h2>
+        <div className="mt-10 space-y-4">
+          {FAQS.map((f) => (
+            <details
+              key={f.q}
+              className="card-panel group rounded-xl p-5 open:border-gold/40"
+            >
+              <summary className="cursor-pointer list-none font-semibold">
+                <span className="mr-2 text-gold">Q.</span>
+                {f.q}
+              </summary>
+              <p className="mt-3 text-sm text-muted">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
+        <div className="card-panel rounded-3xl px-8 py-14 text-center">
+          <h2 className="text-3xl font-bold sm:text-4xl">
+            Sẵn sàng có trang bán hàng đầu tiên bằng AI?
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-muted">
+            Bắt đầu với ebook {formatVnd(EBOOK.price)} hoặc chọn trọn bộ lộ
+            trình để tiết kiệm hơn.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/san-pham"
+            className="btn-gold mt-8 inline-block rounded-full px-8 py-3 text-base"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            Xem bảng giá ngay
+          </Link>
         </div>
-      </main>
+      </section>
     </div>
   );
 }
