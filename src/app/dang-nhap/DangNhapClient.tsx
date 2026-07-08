@@ -1,21 +1,74 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+
+function mapAuthError(message: string) {
+  if (message.includes("Invalid login credentials")) {
+    return "Email hoặc mật khẩu không đúng.";
+  }
+  if (message.includes("User already registered")) {
+    return "Email này đã có tài khoản. Hãy chuyển sang tab Đăng nhập.";
+  }
+  if (message.includes("Password should be at least")) {
+    return "Mật khẩu cần tối thiểu 6 ký tự.";
+  }
+  return message;
+}
 
 export default function DangNhapClient() {
   const [tab, setTab] = useState<"login" | "register">("login");
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") || "/hoc-vien";
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitted(true);
-    window.setTimeout(() => {
-      router.push("/hoc-vien");
-    }, 600);
+    setError("");
+    setNotice("");
+    setSubmitting(true);
+    const supabase = createClient();
+
+    if (tab === "login") {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      setSubmitting(false);
+      if (error) {
+        setError(mapAuthError(error.message));
+        return;
+      }
+      router.push(next);
+      router.refresh();
+    } else {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: fullName } },
+      });
+      setSubmitting(false);
+      if (error) {
+        setError(mapAuthError(error.message));
+        return;
+      }
+      if (data.session) {
+        router.push(next);
+        router.refresh();
+      } else {
+        setNotice(
+          "Đã tạo tài khoản. Vui lòng kiểm tra email để xác nhận trước khi đăng nhập.",
+        );
+        setTab("login");
+      }
+    }
   }
 
   return (
@@ -23,7 +76,11 @@ export default function DangNhapClient() {
       <div className="card-panel rounded-2xl p-8">
         <div className="mb-6 flex rounded-full border border-border bg-panel-2 p-1 text-sm font-semibold">
           <button
-            onClick={() => setTab("login")}
+            onClick={() => {
+              setTab("login");
+              setError("");
+              setNotice("");
+            }}
             className={`flex-1 rounded-full py-2 transition-colors ${
               tab === "login" ? "bg-gold text-black" : "text-muted"
             }`}
@@ -31,7 +88,11 @@ export default function DangNhapClient() {
             Đăng nhập
           </button>
           <button
-            onClick={() => setTab("register")}
+            onClick={() => {
+              setTab("register");
+              setError("");
+              setNotice("");
+            }}
             className={`flex-1 rounded-full py-2 transition-colors ${
               tab === "register" ? "bg-gold text-black" : "text-muted"
             }`}
@@ -49,6 +110,12 @@ export default function DangNhapClient() {
             : "Tạo tài khoản để bắt đầu hành trình kiếm tiền với AI."}
         </p>
 
+        {notice && (
+          <p className="mt-4 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-2.5 text-sm text-emerald-300">
+            {notice}
+          </p>
+        )}
+
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           {tab === "register" && (
             <div>
@@ -58,6 +125,8 @@ export default function DangNhapClient() {
               <input
                 required
                 type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
                 placeholder="Nguyễn Văn A"
                 className="mt-1.5 w-full rounded-lg border border-border bg-panel-2 px-4 py-2.5 text-sm outline-none focus:border-gold"
               />
@@ -91,23 +160,20 @@ export default function DangNhapClient() {
             />
           </div>
 
+          {error && <p className="text-sm text-red-400">{error}</p>}
+
           <button
             type="submit"
-            disabled={submitted}
+            disabled={submitting}
             className="btn-gold w-full rounded-full py-3 text-sm disabled:opacity-60"
           >
-            {submitted
+            {submitting
               ? "Đang xử lý..."
               : tab === "login"
                 ? "Đăng nhập"
                 : "Tạo tài khoản"}
           </button>
         </form>
-
-        <p className="mt-6 text-center text-xs text-muted">
-          Đây là biểu mẫu minh hoạ (chưa kết nối hệ thống tài khoản thật).
-          Nhấn nút để xem thử trang Học viện.
-        </p>
       </div>
     </div>
   );

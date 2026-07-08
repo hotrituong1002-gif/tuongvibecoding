@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import DangNhapClient from "./DangNhapClient";
 
 export const metadata = {
@@ -5,5 +6,9 @@ export const metadata = {
 };
 
 export default function DangNhapPage() {
-  return <DangNhapClient />;
+  return (
+    <Suspense>
+      <DangNhapClient />
+    </Suspense>
+  );
 }

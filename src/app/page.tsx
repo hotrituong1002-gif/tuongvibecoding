@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { COMBOS, EBOOK, formatVnd } from "@/lib/products";
+import { getProducts } from "@/lib/queries/products";
+import { formatVnd } from "@/lib/format";
 
 const STATS = [
   { value: "3.200+", label: "học viên đã tham gia" },
@@ -64,7 +65,11 @@ const FAQS = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const products = await getProducts();
+  const ebook = products.find((p) => p.kind === "ebook");
+  const combos = products.filter((p) => p.kind === "combo");
+
   return (
     <div>
       {/* Hero */}
@@ -144,9 +149,9 @@ export default function HomePage() {
               Dùng AI làm phần việc khó — bạn chỉ cần làm theo lộ trình.
             </p>
             <p className="mt-4 text-muted">
-              Ebook &quot;{EBOOK.title}&quot; và 5 combo trong lộ trình sẽ dẫn
-              bạn đi từ tư duy đến một trang bán hàng thật, đang chạy được
-              doanh số.
+              Ebook &quot;{ebook?.title ?? "Kiếm Tiền Với AI"}&quot; và {combos.length}{" "}
+              combo trong lộ trình sẽ dẫn bạn đi từ tư duy đến một trang bán
+              hàng thật, đang chạy được doanh số.
             </p>
             <Link
               href="/san-pham"
@@ -196,7 +201,7 @@ export default function HomePage() {
         </div>
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {COMBOS.map((c, i) => (
+          {combos.map((c, i) => (
             <div
               key={c.slug}
               className={`rounded-2xl bg-gradient-to-br p-6 ${c.cover} border border-border`}
@@ -209,8 +214,8 @@ export default function HomePage() {
               </h3>
               <p className="mt-3 text-sm text-white/70">{c.description}</p>
               <div className="mt-5 flex items-center justify-between text-sm">
-                <span className="text-white/60">{c.lessonsCount} bài học</span>
-                <span className="font-bold text-gold">{c.priceLabel}</span>
+                <span className="text-white/60">{c.lessons_count} bài học</span>
+                <span className="font-bold text-gold">{formatVnd(c.price)}</span>
               </div>
             </div>
           ))}
@@ -266,8 +271,8 @@ export default function HomePage() {
             Sẵn sàng có trang bán hàng đầu tiên bằng AI?
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-muted">
-            Bắt đầu với ebook {formatVnd(EBOOK.price)} hoặc chọn trọn bộ lộ
-            trình để tiết kiệm hơn.
+            Bắt đầu với ebook {formatVnd(ebook?.price ?? 0)} hoặc chọn trọn bộ
+            lộ trình để tiết kiệm hơn.
           </p>
           <Link
             href="/san-pham"

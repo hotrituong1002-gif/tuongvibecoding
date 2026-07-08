@@ -1,4 +1,5 @@
-import type { Product } from "@/lib/products";
+import type { Product } from "@/lib/types";
+import { formatVnd } from "@/lib/format";
 
 export default function CourseCard({
   product,
@@ -22,7 +23,7 @@ export default function CourseCard({
           {unlocked ? "✓ Đã mở" : "🔒 " + product.badge}
         </span>
         <span className="rounded-full bg-black/60 px-3 py-1 text-xs font-bold text-gold">
-          {product.price > 0 ? product.priceLabel : product.priceLabel}
+          {product.price > 0 ? formatVnd(product.price) : "Tặng kèm"}
         </span>
       </div>
 
@@ -31,9 +32,9 @@ export default function CourseCard({
         <p className="mt-1 text-xs text-muted">{product.tag}</p>
 
         <div className="mt-4 flex items-center justify-between text-sm">
-          {product.lessonsCount > 0 ? (
+          {product.lessons_count > 0 ? (
             <span className="flex items-center gap-1 text-muted">
-              ▶ {product.lessonsCount} bài học
+              ▶ {product.lessons_count} bài học
             </span>
           ) : (
             <span className="text-muted">Cộng đồng riêng</span>

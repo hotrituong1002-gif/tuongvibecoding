@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { COMBOS, EBOOK, SPECIAL } from "@/lib/products";
-import { useUnlock } from "@/lib/unlock";
+import { useRouter } from "next/navigation";
+import type { Product } from "@/lib/types";
+import { createClient } from "@/lib/supabase/client";
 import CourseCard from "@/components/CourseCard";
 
 const SIDEBAR_LINKS = [
@@ -14,29 +15,81 @@ const SIDEBAR_LINKS = [
   { label: "Đối tác", icon: "🤝", href: "/doi-tac" },
 ];
 
-export default function HocVienClient() {
-  const { unlocked, loaded, redeem } = useUnlock();
+const ERROR_MESSAGES: Record<string, string> = {
+  not_authenticated: "Vui lòng đăng nhập lại.",
+  invalid_code: "Mã kích hoạt không hợp lệ. Vui lòng kiểm tra lại.",
+  code_inactive: "Mã này đã bị vô hiệu hoá.",
+  code_expired: "Mã đã hết hạn sử dụng.",
+  code_exhausted: "Mã đã hết lượt sử dụng.",
+};
+
+export default function HocVienClient({
+  products,
+  initialUnlockedSlugs,
+  isAdmin,
+}: {
+  products: Product[];
+  initialUnlockedSlugs: string[];
+  isAdmin: boolean;
+}) {
+  const [unlockedSlugs, setUnlockedSlugs] = useState<Set<string>>(
+    new Set(initialUnlockedSlugs),
+  );
   const [modalOpen, setModalOpen] = useState(false);
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
+  const [redeeming, setRedeeming] = useState(false);
+  const router = useRouter();
 
-  const allCourses = [EBOOK, ...COMBOS, SPECIAL];
-  const completedGates = unlocked ? allCourses.length : 0;
-  const progressPct = Math.round((completedGates / allCourses.length) * 100);
+  const allUnlocked = products.length > 0 && unlockedSlugs.size >= products.length;
+  const progressPct =
+    products.length > 0
+      ? Math.round((unlockedSlugs.size / products.length) * 100)
+      : 0;
 
-  function handleRedeem() {
+  const sortedLinks = useMemo(
+    () =>
+      isAdmin
+        ? [...SIDEBAR_LINKS, { label: "Quản trị", icon: "🛠", href: "/admin" }]
+        : SIDEBAR_LINKS,
+    [isAdmin],
+  );
+
+  async function handleRedeem() {
     if (!code.trim()) {
       setError("Vui lòng nhập mã kích hoạt.");
       return;
     }
-    const ok = redeem(code);
-    if (ok) {
-      setModalOpen(false);
-      setCode("");
-      setError("");
-    } else {
-      setError("Mã kích hoạt không hợp lệ. Vui lòng kiểm tra lại.");
+    setRedeeming(true);
+    setError("");
+
+    const supabase = createClient();
+    const { data, error: rpcError } = await supabase.rpc(
+      "redeem_activation_code",
+      { p_code: code },
+    );
+
+    setRedeeming(false);
+
+    if (rpcError) {
+      setError(ERROR_MESSAGES[rpcError.message] ?? "Có lỗi xảy ra, thử lại sau.");
+      return;
     }
+
+    const newSlugs = (data ?? []).map(
+      (row: { unlocked_slug: string }) => row.unlocked_slug,
+    );
+    setUnlockedSlugs((prev) => new Set([...prev, ...newSlugs]));
+    setModalOpen(false);
+    setCode("");
+    router.refresh();
+  }
+
+  async function handleLogout() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
   }
 
   return (
@@ -47,7 +100,7 @@ export default function HocVienClient() {
           Main menu
         </p>
         <nav className="space-y-1">
-          {SIDEBAR_LINKS.map((link) => {
+          {sortedLinks.map((link) => {
             const content = (
               <span
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium ${
@@ -80,12 +133,12 @@ export default function HocVienClient() {
           >
             <span>🔑</span> Nhập mã kích hoạt
           </button>
-          <Link
-            href="/dang-nhap"
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-foreground/80 hover:bg-panel-2"
+          <button
+            onClick={handleLogout}
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-foreground/80 hover:bg-panel-2"
           >
             <span>↩</span> Đăng xuất
-          </Link>
+          </button>
         </nav>
       </aside>
 
@@ -93,19 +146,19 @@ export default function HocVienClient() {
       <div className="min-w-0 flex-1">
         <h1 className="text-3xl font-extrabold">Khóa học của tôi</h1>
         <p className="mt-1 text-sm text-muted">
-          5 combo theo 5 chương + cuốn đặc biệt AI SALES SYSTEM — học theo lộ
-          trình.
+          {products.length} sản phẩm trong lộ trình — học theo thứ tự để đạt
+          kết quả tốt nhất.
         </p>
 
-        {loaded && !unlocked && (
+        {!allUnlocked && (
           <div className="mt-6 flex flex-col gap-4 rounded-2xl border border-gold/30 bg-gold/5 p-5 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm">
               <span className="mr-2">🔒</span>
-              Bạn chưa mở khóa.{" "}
+              Bạn chưa mở khóa hết.{" "}
               <span className="font-semibold text-gold">
                 Đã có Ebook Kiếm Tiền Với AI?
               </span>{" "}
-              Nhập mã để mở trọn 5 combo — hoặc đặt sách để nhận mã.
+              Nhập mã để mở combo — hoặc đặt sách để nhận mã.
             </p>
             <div className="flex shrink-0 gap-3">
               <button
@@ -135,13 +188,17 @@ export default function HocVienClient() {
             />
           </div>
           <span className="whitespace-nowrap text-sm text-muted">
-            {completedGates} / {allCourses.length} cửa hoàn thành
+            {unlockedSlugs.size} / {products.length} cửa hoàn thành
           </span>
         </div>
 
         <div className="mt-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {allCourses.map((c) => (
-            <CourseCard key={c.slug} product={c} unlocked={unlocked} />
+          {products.map((p) => (
+            <CourseCard
+              key={p.slug}
+              product={p}
+              unlocked={unlockedSlugs.has(p.slug)}
+            />
           ))}
         </div>
       </div>
@@ -180,14 +237,12 @@ export default function HocVienClient() {
               </button>
               <button
                 onClick={handleRedeem}
-                className="btn-gold flex-1 rounded-full py-2.5 text-sm"
+                disabled={redeeming}
+                className="btn-gold flex-1 rounded-full py-2.5 text-sm disabled:opacity-60"
               >
-                Mở khóa
+                {redeeming ? "Đang kiểm tra..." : "Mở khóa"}
               </button>
             </div>
-            <p className="mt-4 text-center text-xs text-muted">
-              Demo: dùng mã <span className="font-mono text-gold">AISALES2026</span>
-            </p>
           </div>
         </div>
       )}
