@@ -7,9 +7,9 @@ import CountdownTimer from "@/components/CountdownTimer";
 const PROMO_END_DATE = "2026-07-15T23:59:59+07:00";
 
 const STATS = [
-  { value: "3.200+", label: "học viên đã tham gia" },
-  { value: "4.8/5", label: "đánh giá trung bình" },
-  { value: "24 giờ", label: "để ra trang bán hàng đầu tiên" },
+  { value: "6", label: "sản phẩm trong lộ trình" },
+  { value: "47", label: "bài học chi tiết, có sẵn ngay" },
+  { value: "Trọn đời", label: "quyền truy cập sau khi mua" },
 ];
 
 const PROBLEMS = [
@@ -30,27 +30,6 @@ const FEATURES = [
   {
     title: "Học xong có trang thật",
     desc: "Kết thúc lộ trình, bạn có ít nhất một trang bán hàng hoàn chỉnh, sẵn sàng chạy quảng cáo.",
-  },
-];
-
-const TESTIMONIALS = [
-  {
-    name: "Minh Anh",
-    role: "Kinh doanh mỹ phẩm online",
-    quote:
-      "Trước giờ mình toàn thuê ngoài làm landing page, giờ tự làm trong một buổi tối bằng AI, tiết kiệm cả triệu bạc mỗi lần sửa.",
-  },
-  {
-    name: "Đức Huy",
-    role: "Freelancer dịch vụ AI",
-    quote:
-      "Combo Copywriting với Thiết Kế Trang Bán Hàng giúp mình có ngay sản phẩm demo để chào khách, chốt đơn nhanh hơn hẳn.",
-  },
-  {
-    name: "Thu Trang",
-    role: "Chủ shop thời trang",
-    quote:
-      "Phần automation giúp shop mình trả lời khách tự động 24/7, không còn bỏ sót đơn vào ban đêm nữa.",
   },
 ];
 
@@ -236,24 +215,21 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Founder note (real testimonials will replace this once available) */}
       <section className="border-y border-border bg-panel/40 py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-3xl font-bold sm:text-4xl">
-            Học viên nói gì?
+        <div className="mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8">
+          <span className="text-4xl">👋</span>
+          <h2 className="mt-4 text-2xl font-bold sm:text-3xl">
+            Học viện mới ra mắt
           </h2>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {TESTIMONIALS.map((t) => (
-              <div key={t.name} className="card-panel rounded-2xl p-6">
-                <p className="text-gold">★★★★★</p>
-                <p className="mt-3 text-sm text-foreground/90">
-                  &ldquo;{t.quote}&rdquo;
-                </p>
-                <p className="mt-4 text-sm font-semibold">{t.name}</p>
-                <p className="text-xs text-muted">{t.role}</p>
-              </div>
-            ))}
-          </div>
+          <p className="mt-4 text-muted">
+            AI Sales Academy vừa hoàn thiện trọn bộ lộ trình. Đánh giá từ
+            những học viên đầu tiên sẽ được cập nhật tại đây — bạn có thể là
+            một trong số đó.
+          </p>
+          <p className="mt-2 text-sm text-muted">
+            — Hồ Trí Tượng, người xây dựng AI Sales Academy
+          </p>
         </div>
       </section>
 
