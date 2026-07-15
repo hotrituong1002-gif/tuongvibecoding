@@ -11,7 +11,11 @@ type SepayPayload = {
 
 function isAuthorized(request: Request): boolean {
   const secret = process.env.SEPAY_WEBHOOK_API_KEY;
-  if (!secret) return false;
+  // No key configured yet on our side (matches an SePay webhook still set to
+  // "Không xác thực"). Accept the call so payments confirm today; as soon as
+  // SEPAY_WEBHOOK_API_KEY is set (after enabling auth on the SePay side too)
+  // this route locks down automatically, no code change needed.
+  if (!secret) return true;
 
   const header = request.headers.get("authorization") ?? "";
   const token = header.replace(/^(Bearer|Apikey)\s+/i, "").trim();

@@ -41,10 +41,15 @@ tên viết liền không dấu, ví dụ `MBBank`, `Vietcombank`, `ACB`, `TPBan
 Xem danh sách chính xác trong SePay Dashboard → phần liên kết ngân hàng của
 bạn.
 
-## 4. Tạo webhook API Key trên SePay
+## 4. Tạo webhook API Key trên SePay (khuyến nghị — nên bật sớm)
 
-1. Đăng nhập **sepay.vn** → vào tài khoản ngân hàng đã liên kết → mục
-   **Cấu hình Webhook / API**.
+> Nếu chưa bật bước này, webhook vẫn hoạt động bình thường (đang chạy ở chế
+> độ "Không xác thực" cho khớp với cấu hình hiện tại trên SePay) — nhưng khi
+> đó bất kỳ ai biết URL webhook đều có thể giả request báo "đã thanh toán".
+> Nên bật xác thực càng sớm càng tốt trước khi mở bán rộng rãi.
+
+1. Đăng nhập **sepay.vn** → **Tích hợp WebHooks** → mở webhook đã tạo (ví dụ
+   "Hồ Trí Tượng") → bật mục **Xác thực / API Key**.
 2. Tạo một API Key mới (hoặc dùng key có sẵn) — đây là chuỗi bí mật SePay sẽ
    gửi kèm mỗi lần gọi webhook để xác thực.
 3. Thêm vào `.env.local`:
