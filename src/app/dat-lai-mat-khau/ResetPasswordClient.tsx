@@ -34,7 +34,6 @@ export default function ResetPasswordClient() {
     setDone(true);
     setTimeout(() => {
       router.push("/hoc-vien");
-      router.refresh();
     }, 1500);
   }
 

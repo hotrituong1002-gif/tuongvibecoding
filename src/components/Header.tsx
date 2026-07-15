@@ -22,7 +22,6 @@ export default function Header({ user }: { user: CurrentUser | null }) {
     await supabase.auth.signOut();
     setOpen(false);
     router.push("/");
-    router.refresh();
   }
 
   return (

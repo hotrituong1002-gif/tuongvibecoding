@@ -46,7 +46,6 @@ export default function CheckoutClient({
     if (status !== "paid") return;
     const t = setTimeout(() => {
       router.push("/hoc-vien");
-      router.refresh();
     }, 1800);
     return () => clearTimeout(t);
   }, [status, router]);

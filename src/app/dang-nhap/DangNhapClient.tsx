@@ -62,7 +62,6 @@ export default function DangNhapClient() {
         return;
       }
       router.push(next);
-      router.refresh();
     } else {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -76,7 +75,6 @@ export default function DangNhapClient() {
       }
       if (data.session) {
         router.push(next);
-        router.refresh();
       } else {
         setNotice(
           "Đã tạo tài khoản. Vui lòng kiểm tra email để xác nhận trước khi đăng nhập.",
