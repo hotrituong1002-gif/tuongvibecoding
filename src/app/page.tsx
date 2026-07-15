@@ -85,15 +85,17 @@ export default async function HomePage() {
               🔥 Ưu đãi ra mắt — giá tốt nhất áp dụng có thời hạn
             </span>
             <h1 className="mt-6 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-              Tự tay dựng trang bán hàng{" "}
-              <span className="gold-gradient-text">chuyên nghiệp</span> bằng{" "}
-              <span className="neon-gradient-text">AI</span> — không cần biết
-              code
+              Tự tay dựng{" "}
+              <span className="gold-gradient-text">trọn bộ hệ thống bán hàng</span>{" "}
+              bằng <span className="neon-gradient-text">AI</span> — không cần
+              biết code
             </h1>
             <p className="mt-6 text-lg text-muted">
-              Lộ trình từng bước giúp bạn viết content, thiết kế trang bán hàng
-              và tự động hoá chăm sóc khách hàng — tất cả bằng công cụ AI, dù
-              bạn chưa từng làm marketing hay lập trình.
+              Không chỉ một trang landing page đơn lẻ — lộ trình giúp bạn dựng
+              cả trang bán hàng <strong className="text-foreground">và</strong>{" "}
+              trợ lý AI chăm sóc, chốt đơn tự động. Phù hợp cho chủ shop
+              online, nhà hàng, spa, freelancer — dù bạn chưa từng làm
+              marketing hay lập trình.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link

@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 const SITE_URL = "https://ai-sales-academy-seven.vercel.app";
 const SITE_TITLE = "AI Sales Academy — Kiếm Tiền Với AI";
 const SITE_DESCRIPTION =
-  "Hướng dẫn tạo trang bán hàng và kiếm tiền với AI: lộ trình từng bước, dễ làm theo, có kết quả thật.";
+  "Dựng trọn bộ hệ thống bán hàng bằng AI — trang bán hàng và trợ lý AI chốt đơn tự động — dành cho chủ shop online, nhà hàng, spa, freelancer. Không cần biết code.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
