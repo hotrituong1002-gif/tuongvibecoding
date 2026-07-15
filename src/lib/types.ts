@@ -50,3 +50,14 @@ export type Order = {
   paid_at: string | null;
   created_at: string;
 };
+
+export type Lesson = {
+  id: string;
+  product_slug: string;
+  title: string;
+  content: string;
+  video_url: string | null;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+};

@@ -99,6 +99,19 @@ create table if not exists public.orders (
   created_at timestamptz not null default now()
 );
 
+-- 7. lessons (actual course content inside each product)
+create table if not exists public.lessons (
+  id uuid primary key default gen_random_uuid(),
+  product_slug text not null references public.products(slug) on delete cascade,
+  title text not null,
+  content text not null default '',
+  video_url text,
+  sort_order integer not null default 0,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now(),
+  unique (product_slug, sort_order)
+);
+
 -- Helper: is the current logged-in user an admin? (security definer avoids RLS recursion)
 create or replace function public.is_admin()
 returns boolean
@@ -119,6 +132,7 @@ alter table public.activation_codes enable row level security;
 alter table public.unlocks enable row level security;
 alter table public.settings enable row level security;
 alter table public.orders enable row level security;
+alter table public.lessons enable row level security;
 
 drop policy if exists "profiles_select" on public.profiles;
 create policy "profiles_select" on public.profiles for select
@@ -185,6 +199,20 @@ create policy "orders_insert" on public.orders for insert
 drop policy if exists "orders_update_admin" on public.orders;
 create policy "orders_update_admin" on public.orders for update
   using (public.is_admin());
+
+-- Lessons: only visible to admins or users who have unlocked that product.
+drop policy if exists "lessons_select" on public.lessons;
+create policy "lessons_select" on public.lessons for select
+  using (
+    public.is_admin() or exists (
+      select 1 from public.unlocks u
+      where u.user_id = auth.uid() and u.product_slug = lessons.product_slug
+    )
+  );
+
+drop policy if exists "lessons_write" on public.lessons;
+create policy "lessons_write" on public.lessons for all
+  using (public.is_admin()) with check (public.is_admin());
 
 -- Redeem an activation code as the logged-in user.
 -- Runs as security definer so a normal user can redeem without needing

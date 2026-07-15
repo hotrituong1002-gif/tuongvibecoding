@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Product } from "@/lib/types";
 import { formatVnd } from "@/lib/format";
 
@@ -41,9 +42,12 @@ export default function CourseCard({
           )}
 
           {unlocked ? (
-            <button className="rounded-full bg-gold px-4 py-1.5 text-xs font-bold text-black hover:brightness-105">
+            <Link
+              href={`/hoc-vien/${product.slug}`}
+              className="rounded-full bg-gold px-4 py-1.5 text-xs font-bold text-black hover:brightness-105"
+            >
               Vào học
-            </button>
+            </Link>
           ) : (
             <span className="text-xs font-semibold text-muted">Đã khoá</span>
           )}

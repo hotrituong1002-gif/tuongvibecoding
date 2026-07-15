@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 const LINKS = [
   { href: "/admin", label: "Tổng quan" },
   { href: "/admin/products", label: "Sản phẩm" },
+  { href: "/admin/lessons", label: "Bài học" },
   { href: "/admin/orders", label: "Đơn hàng" },
   { href: "/admin/codes", label: "Mã kích hoạt" },
   { href: "/admin/users", label: "Người dùng" },
